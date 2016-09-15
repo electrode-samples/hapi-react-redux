@@ -188,5 +188,68 @@ import SSRCachingSimpleType from "./components/SSRCachingSimpleType";
 npm install --save electrode-redux-router-engine
 ```
 
-### Usage
+---
 
+## <a name="above-the-fold"></a>Electrode Above the Fold Server Rendering
+[Above the Fold Server Rendering](https://github.com/electrode-io/above-the-fold-only-server-render) is a React component for optionally skipping server side rendering of components outside above-the-fold (or outside of the viewport). This component helps render your components on the server that are above the fold and the remaining components on the client.
+
+[Above-the-fold-only-server-render](https://github.com/electrode-io/above-the-fold-only-server-render) helps increase performance both by decreasing the load on renderToString and sending the end user a smaller amount of markup.
+
+By default, the [above-the-fold-only-server-render](https://github.com/electrode-io/above-the-fold-only-server-render) component is an exercise in simplicity; it does nothing and only returns the child component.
+
+### Install
+- Add the `above-the-fold-only-server-render` component:
+
+```bash
+npm install above-the-fold-only-server-render --save
+```
+
+### Usage
+* Add the component `src/components/above-the-fold.js`: 
+
+```js
+import React from "react";
+import {AboveTheFoldOnlyServerRender} from "above-the-fold-only-server-render";
+
+export class AboveFold extends React.Component {
+
+  render() {
+    return (
+      <AboveTheFoldOnlyServerRender skip={true}>
+        <div className="renderMessage" style={{color: "blue"}}>
+          <h3>Above-the-fold-only-server-render: Increase Your Performance</h3>
+          <p>This will skip server rendering if the 'AboveTheFoldOnlyServerRender'
+            lines are present, or uncommented out.</p>
+          <p>This will be rendered on the server and visible if the 'AboveTheFoldOnlyServerRender'
+            lines are commented out.</p>
+          <p>Try manually toggling this component to see it in action</p>
+          <p>
+            <a href="https://github.com/electrode-io/above-the-fold-only-server-render"
+              target="_blank">Read more about this module and see our live demo
+            </a>
+          </p>
+        </div>
+      </AboveTheFoldOnlyServerRender>
+    );
+  }
+}
+```
+
+* Add the component to the route `src/routes.js`:
+
+```js
+import { AboveFold } from "./components/above-the-fold";
+  <Route component={Header}>
+    <Route path="/abovefold" component={AboveFold} />
+	</Route>
+``` 
+
+* Add the following links to the header `src/components/Header.js`: 
+
+```html
+<li style={styles.list}><Link style={styles.navLink}  to="/abovefold" activeClassName="active">Above the fold</Link></li>				
+```
+
+* Following the instructions on how to manipulate the skip prop by directly commenting and uncommenting the `above-the-fold-only-server-render` [component](https://github.com/electrode-io/above-the-fold-only-server-render).
+
+---

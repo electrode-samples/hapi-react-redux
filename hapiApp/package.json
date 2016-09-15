@@ -34,6 +34,7 @@
     "postinstall": "webpack -p --config configs/webpack.client.js"
   },
   "dependencies": {
+    "above-the-fold-only-server-render": "^1.0.2",
     "babel": "6.5.2",
     "babel-core": "6.11.4",
     "babel-loader": "6.2.4",

@@ -81,7 +81,8 @@ export default ({children}) => (
 				<li style={styles.list}><Link style={styles.navLink} to="/" activeClassName="active">Home</Link></li>
 				<li style={styles.list}><Link style={styles.navLink}  to="/about" activeClassName="active">About</Link></li>
 				<li style={styles.list}><Link style={styles.navLink}  to="/ssrcachingtemplatetype" activeClassName="active">SSR Template</Link></li>
-				<li style={styles.list}><Link style={styles.navLink}  to="/ssrcachingsimpletype" activeClassName="active">SSR Simple</Link></li>				
+				<li style={styles.list}><Link style={styles.navLink}  to="/ssrcachingsimpletype" activeClassName="active">SSR Simple</Link></li>
+				<li style={styles.list}><Link style={styles.navLink}  to="/abovefold" activeClassName="active">Above the fold</Link></li>								
 				<li style={styles.list}><iframe src="https://ghbtns.com/github-btn.html?user=Luandro&repo=hapi-universal-redux&type=star&count=true" frameBorder="0" scrolling="0" width="110" height="20" style={{float:"right"}}></iframe></li>
 			</ul>
 		</div>
