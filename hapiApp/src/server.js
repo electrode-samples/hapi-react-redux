@@ -12,6 +12,23 @@ import routesContainer from "./routes";
 import url from "url";
 let routes = routesContainer;
 
+const SSRCaching = require("electrode-react-ssr-caching");
+const cacheConfig = {
+  components: {
+    SSRCachingTemplateType: {
+      strategy: "template",
+      enable: true
+    },
+    SSRCachingSimpleType: {
+      strategy: "simple",
+      enable: true
+    }
+  }
+};
+
+SSRCaching.enableCaching();
+SSRCaching.setCachingConfig(cacheConfig);
+
 /**
  * Create Redux store, and get intitial state.
  */
