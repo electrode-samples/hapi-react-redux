@@ -115,7 +115,7 @@ export default connect(
 )(SSRCachingTemplateTypeWrapper);
 ```
 
-* To enable caching using `electrode-react-ssr-caching` we need to do the below configuration:
+* Add the following to `src/server.js`:
 
 ```
 const SSRCaching = require("electrode-react-ssr-caching");
@@ -137,8 +137,7 @@ SSRCaching.enableCaching();
 SSRCaching.setCachingConfig(cacheConfig);
 ```
 
-* The above configuration is done in `src/server.js`.
-* Add the following to `hapiApp/src/routes.js`: 
+* Add the following to `src/routes.js`: 
 
 ```javascript
 import SSRCachingTemplateType from "./components/SSRCachingTemplateType";
@@ -146,8 +145,8 @@ import SSRCachingSimpleType from "./components/SSRCachingSimpleType";
 
 <Route path="/">
   
-  <Route path="ssrcachingtemplatetype" component={SSRCachingTemplateType} />
-  <Route path="ssrcachingsimpletype" component={SSRCachingSimpleType} />
+  <Route path="/ssrcachingtemplatetype" component={SSRCachingTemplateType} />
+  <Route path="/ssrcachingsimpletype" component={SSRCachingSimpleType} />
 
 </Route>
 ```
