@@ -116,9 +116,10 @@ export default connect(
 ```
 
 * Add the following to `src/server.js`:
+* Note: make sure to include `SSRCaching` above the `react` import
 
 ```
-const SSRCaching = require("electrode-react-ssr-caching");
+import SSRCaching from "electrode-react-ssr-caching";
 
 const cacheConfig = {
   components: {
@@ -137,7 +138,23 @@ SSRCaching.enableCaching();
 SSRCaching.setCachingConfig(cacheConfig);
 ```
 
-* Add the following to `src/routes.js`: 
+* From `src/server.js`, replace this line: `const store = configureStore();` with the following: 
+
+```javascript
+const store = configureStore({count: 100});
+```
+
+* Add the count to the root reducer `src/reducers/index.js`: 
+
+```javascript
+const rootReducer = combineReducers({
+  stargazers,
+  routing: routerReducer,
+  count: (s=5, a) => s
+});
+```  
+
+* Add the following routes to `src/routes.js`: 
 
 ```javascript
 import SSRCachingTemplateType from "./components/SSRCachingTemplateType";
@@ -149,6 +166,13 @@ import SSRCachingSimpleType from "./components/SSRCachingSimpleType";
   <Route path="/ssrcachingsimpletype" component={SSRCachingSimpleType} />
 
 </Route>
+```
+
+* Add the following links to the header `src/components/Header.js`: 
+
+```html
+<li style={styles.list}><Link style={styles.navLink}  to="/ssrcachingtemplatetype" activeClassName="active">SSR Template</Link></li>
+<li style={styles.list}><Link style={styles.navLink}  to="/ssrcachingsimpletype" activeClassName="active">SSR Simple</Link></li>				
 ```
 
 * To read more, go to [electrode-react-ssr-caching](https://github.com/electrode-io/electrode-react-ssr-caching)

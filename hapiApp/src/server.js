@@ -2,6 +2,7 @@ import babelPolyfill from "babel-polyfill";
 import { Server } from "hapi";
 import h2o2 from "h2o2";
 import inert from "inert";
+import SSRCaching from "electrode-react-ssr-caching";
 import React from "react";
 import ReactDOM from "react-dom/server";
 import { RouterContext, match } from "react-router";
@@ -12,7 +13,6 @@ import routesContainer from "./routes";
 import url from "url";
 let routes = routesContainer;
 
-const SSRCaching = require("electrode-react-ssr-caching");
 const cacheConfig = {
   components: {
     SSRCachingTemplateType: {
@@ -32,7 +32,7 @@ SSRCaching.setCachingConfig(cacheConfig);
 /**
  * Create Redux store, and get intitial state.
  */
-const store = configureStore();
+const store = configureStore({count: 100});
 const initialState = store.getState();
 /**
  * Start Hapi server
