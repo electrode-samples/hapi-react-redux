@@ -188,6 +188,9 @@ import SSRCachingSimpleType from "./components/SSRCachingSimpleType";
 npm install --save electrode-redux-router-engine
 ```
 
+### Usage
+
+
 ---
 
 ## <a name="above-the-fold"></a>Electrode Above the Fold Server Rendering

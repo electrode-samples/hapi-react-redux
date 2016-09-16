@@ -7,10 +7,12 @@ import React from "react";
 import ReactDOM from "react-dom/server";
 import { RouterContext, match } from "react-router";
 import configureStore from "./store.js";
-import RadiumContainer from './containers/RadiumContainer';
 import { Provider } from 'react-redux';
 import routesContainer from "./routes";
 import url from "url";
+import { createStore } from "redux";
+import ReduxRouterEngine from 'electrode-redux-router-engine';
+
 let routes = routesContainer;
 
 const cacheConfig = {
@@ -34,6 +36,20 @@ SSRCaching.setCachingConfig(cacheConfig);
  */
 const store = configureStore({count: 100});
 const initialState = store.getState();
+
+function createReduxStore(request) {
+  let initialState = {count : 100};
+  let rootReducer = (s, a) => s;
+
+  return Promise.all([
+      Promise.resolve({})
+    ]).then(() => {
+      return store;
+  });
+}
+
+const engine = new ReduxRouterEngine({ routes, createReduxStore});
+
 /**
  * Start Hapi server
  */
@@ -107,22 +123,19 @@ server.ext("onPreResponse", (request, reply) => {
     return reply.continue();
   }
 
-  match({routes, location: request.path}, (error, redirectLocation, renderProps) => {
-    if (redirectLocation) {
-      reply.redirect(redirectLocation.pathname + redirectLocation.search);
-      return;
-    }
-    if (error || !renderProps) {
-      reply.continue();
-      return;
-    }
-	const reactString = ReactDOM.renderToString(
-		<Provider store={store}>
-			<RadiumContainer radiumConfig={{userAgent: request.headers['user-agent']}}>
-				<RouterContext {...renderProps} />
-			</RadiumContainer>
-		</Provider>
-	);
+engine.render(request)
+    .then( (result) => {
+      // send full HTML with result back using res
+
+	// const reactString = ReactDOM.renderToString(
+	// 	<Provider store={store}>
+	// 		<RadiumContainer radiumConfig={{userAgent: request.headers['user-agent']}}>
+	// 			<div>
+	// 				<div>{result.html}</div>
+	// 			</div>
+	// 		</RadiumContainer>
+	// 	</Provider>
+	// );
 	const webserver = __PRODUCTION__ ? "" : `//${hostname}:8080`;
 	let output = (
 		`<!doctype html>
@@ -133,15 +146,17 @@ server.ext("onPreResponse", (request, reply) => {
 				<link rel="shortcut icon" href="/favicon.ico">
 			</head>
 			<body>
-				<div id="react-root">${reactString}</div>
+				<div id="react-root">${result.html}</div>
 				<script>
 					window.__INITIAL_STATE__ = ${JSON.stringify(initialState)}
 					window.__UA__ = ${JSON.stringify(request.headers['user-agent'])}
 				</script>
 				<script src=${webserver}/dist/client.js></script>
+				<script>if (window.webappStart) webappStart(); </script>
 			</body>
 		</html>`
 		);
+
 	reply(output);
   });
 });
