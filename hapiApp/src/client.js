@@ -10,16 +10,13 @@ const store = configureStore(window.__INITIAL_STATE__);
 delete window.__INITIAL_STATE__;
 const history = syncHistoryWithStore(browserHistory, store)
 
-/**
- * Fire-up React Router.
- */
 const reactRoot = window.document.getElementById("react-root");
 
 window.webappStart = () => {
 	ReactDOM.render(
-	<Provider store={store}>
-    	<Router routes={routes} history={history} />
+    <Provider store={store}>
+      <Router routes={routes} history={history} />
     </Provider>,
     reactRoot
-	)
-}
+	);
+};
