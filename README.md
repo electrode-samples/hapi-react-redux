@@ -306,7 +306,7 @@ npm install above-the-fold-only-server-render --save
 import React from "react";
 import {AboveTheFoldOnlyServerRender} from "above-the-fold-only-server-render";
 
-export class AboveFold extends React.Component {
+export default class AboveFold extends React.Component {
 
   render() {
     return (
@@ -333,17 +333,12 @@ export class AboveFold extends React.Component {
 * Add the component to the route `src/routes.js`:
 
 ```js
-import { AboveFold } from "./components/above-the-fold";
-  <Route component={Header}>
-    <Route path="/abovefold" component={AboveFold} />
-	</Route>
+import AboveFold from "./components/above-the-fold";
+
+<Route component={Header}>
+  <Route path="/above-the-fold" component={AboveFold} />
+</Route>
 ``` 
-
-* Add the following links to the header `src/components/Header.js`: 
-
-```html
-<li style={styles.list}><Link style={styles.navLink}  to="/abovefold" activeClassName="active">Above the fold</Link></li>				
-```
 
 * Following the instructions on how to manipulate the skip prop by directly commenting and uncommenting the `above-the-fold-only-server-render` [component](https://github.com/electrode-io/above-the-fold-only-server-render).
 
