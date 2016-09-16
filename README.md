@@ -1,4 +1,39 @@
 # hapi-react-redux
+- This repo is a sample Hapijs app with the following Electrode modules:
+  - [Electrode React SSR Caching](https://github.com/electrode-io/electrode-react-ssr-caching) 
+  - [Electrode Redux Router Engine](https://github.com/electrode-io/electrode-redux-router-engine)
+  - [Above the Fold Server Rendering](https://github.com/electrode-io/above-the-fold-only-server-render)
+
+## Install
+
+```bash
+git clone https://github.com/electrode-io/hapi-react-redux.git
+npm install 
+```
+
+## Run
+- Start the electrode app in `development` environment:
+
+```bash
+NODE_ENV=development npm run build
+NODE_ENV=development npm run start
+```
+
+- Start the electrode app in `production` environment:
+
+```bash
+NODE_ENV=production npm run build
+NODE_ENV=production npm run start
+```
+
+## Instructions
+- You can build the app from scratch by following the instructions below:
+  - [Hapijs Server](#hapijs-server)
+  - [Electrode React SSR Caching](#ssr-caching)
+  - [Electrode Redux Router Engine](#redux-router-engine)
+  - [Above the Fold Server Rendering](#above-the-fold)
+
+---
 
 ## <a name="hapijs-server"></a>Hapijs Server
 - Let's use the [hapi-universal-redux](https://github.com/luandro/hapi-universal-redux) repo to scaffold our app. 
@@ -19,7 +54,7 @@ NODE_ENV=development npm start
 
 ---
 
-## Electrode React SSR Caching
+## <a name="ssr-caching"></a>Electrode React SSR Caching
 
 [electrode-react-ssr-caching](https://github.com/electrode-io/electrode-react-ssr-caching) module supports profiling React Server Side Rendering time and component caching to help you speed up SSR.
 
@@ -30,7 +65,7 @@ It supports 2 types of caching:
 
 To demonstrate functionality,
 
-* Added component `hapiApp/src/components/SSRCachingSimpleType.jsx` to demostrate Simple strategy. 
+* Added component `src/components/SSRCachingSimpleType.js` to demostrate Simple strategy. 
 
 ```js
 import React from "react";
@@ -43,7 +78,7 @@ class SSRCachingSimpleTypeWrapper extends React.Component {
     var elements = [];
 
     for(var i = 0; i < count; i++) {
-      elements.push(<SSRCachingSimpleType navEntry={"NavEntry" + i}/>);
+      elements.push(<SSRCachingSimpleType key={i} navEntry={"NavEntry" + i}/>);
     }
 
     return (
@@ -71,9 +106,10 @@ const mapStateToProps = (state) => ({
 export default connect(
   mapStateToProps
 )(SSRCachingSimpleTypeWrapper);
+
 ```
 
-* Added component `hapiApp/src/components/SSRCachingTemplateType.jsx` to demostrate Template strategy. 
+* Added component `src/components/SSRCachingTemplateType.jsx` to demostrate Template strategy. 
 
 ```js
 import React from "react";
@@ -85,7 +121,7 @@ class SSRCachingTemplateTypeWrapper extends React.Component {
     var elements = [];
 
     for(var i = 0; i < count; i++) {
-      elements.push(<SSRCachingTemplateType name={"name"+i} title={"title"+i} rating={"rating"+i}/>);
+      elements.push(<SSRCachingTemplateType key={i} name={"name"+i} title={"title"+i} rating={"rating"+i}/>);
     }
 
     return (
@@ -118,7 +154,7 @@ export default connect(
 * Add the following to `src/server.js`:
 * Note: make sure to include `SSRCaching` above the `react` import
 
-```
+```js
 import SSRCaching from "electrode-react-ssr-caching";
 
 const cacheConfig = {
@@ -146,9 +182,8 @@ const store = configureStore({count: 100});
 
 * Add the count to the root reducer `src/reducers/index.js`: 
 
-```javascript
+```js
 const rootReducer = combineReducers({
-  stargazers,
   routing: routerReducer,
   count: (s=5, a) => s
 });
@@ -160,19 +195,10 @@ const rootReducer = combineReducers({
 import SSRCachingTemplateType from "./components/SSRCachingTemplateType";
 import SSRCachingSimpleType from "./components/SSRCachingSimpleType";
 
-<Route path="/">
-  
-  <Route path="/ssrcachingtemplatetype" component={SSRCachingTemplateType} />
-  <Route path="/ssrcachingsimpletype" component={SSRCachingSimpleType} />
-
+<Route>
+	<Route path="/ssrcachingtemplatetype" component={SSRCachingTemplateType} />
+	<Route path="/ssrcachingsimpletype" component={SSRCachingSimpleType} />
 </Route>
-```
-
-* Add the following links to the header `src/components/Header.js`: 
-
-```html
-<li style={styles.list}><Link style={styles.navLink}  to="/ssrcachingtemplatetype" activeClassName="active">SSR Template</Link></li>
-<li style={styles.list}><Link style={styles.navLink}  to="/ssrcachingsimpletype" activeClassName="active">SSR Simple</Link></li>				
 ```
 
 * To read more, go to [electrode-react-ssr-caching](https://github.com/electrode-io/electrode-react-ssr-caching)
@@ -180,7 +206,7 @@ import SSRCachingSimpleType from "./components/SSRCachingSimpleType";
 ---
 
 ## <a name="redux-router-engine"></a>Electrode Redux Router Engine ##
-- [Redux Router Engine](https://github.com/electrode-io/electrode-redux-router-engine) handles async data for React Server Side Rendering using [react-router], Redux, and the [Redux Server Rendering] pattern.
+* [Redux Router Engine](https://github.com/electrode-io/electrode-redux-router-engine) handles async data for React Server Side Rendering using [react-router], Redux, and the [Redux Server Rendering] pattern.
 
 ### Install
 
@@ -189,11 +215,77 @@ npm install --save electrode-redux-router-engine
 ```
 
 ### Usage
+* Add the create redux store and redux router engine in `src/server.js`: 
 
+```js
+import { createStore } from "redux";
+import ReduxRouterEngine from 'electrode-redux-router-engine';
+
+function createReduxStore(request) {
+  let initialState = {count : 100};
+  let rootReducer = (s, a) => s;
+
+  return Promise.all([
+      Promise.resolve({})
+    ]).then(() => {
+      return store;
+  });
+}
+
+const engine = new ReduxRouterEngine({ routes, createReduxStore});
+```
+
+* Update the `server.ext("onPreResponse", (request, reply)` section to contain the following: 
+
+```js
+server.ext("onPreResponse", (request, reply) => {
+	if (typeof request.response.statusCode !== "undefined") {
+    return reply.continue();
+  }
+
+	engine.render(request).then( (result) => { 
+		const webserver = __PRODUCTION__ ? "" : `//${hostname}:8080`;
+		let output = (
+			`<!doctype html>
+			<html lang="en-us">
+				<head>
+					<meta charset="utf-8">
+					<title>Hapi Universal Redux</title>
+					<link rel="shortcut icon" href="/favicon.ico">
+				</head>
+				<body>
+					<div id="react-root">${result.html}</div>
+					<script>
+						window.__INITIAL_STATE__ = ${JSON.stringify(initialState)}
+						window.__UA__ = ${JSON.stringify(request.headers['user-agent'])}
+					</script>
+					<script src=${webserver}/dist/client.js></script>
+					<script>if (window.webappStart) webappStart(); </script>
+				</body>
+			</html>`
+			);
+
+		reply(output);
+	});
+});
+```
+
+* Update `src/client.js` with the following: 
+
+```js
+window.webappStart = () => {
+	ReactDOM.render(
+    <Provider store={store}>
+      <Router routes={routes} history={history} />
+    </Provider>,
+    reactRoot
+	);
+};
+```
 
 ---
 
-## <a name="above-the-fold"></a>Electrode Above the Fold Server Rendering
+## <a name="above-the-fold"></a>Above the Fold Server Rendering
 [Above the Fold Server Rendering](https://github.com/electrode-io/above-the-fold-only-server-render) is a React component for optionally skipping server side rendering of components outside above-the-fold (or outside of the viewport). This component helps render your components on the server that are above the fold and the remaining components on the client.
 
 [Above-the-fold-only-server-render](https://github.com/electrode-io/above-the-fold-only-server-render) helps increase performance both by decreasing the load on renderToString and sending the end user a smaller amount of markup.
@@ -210,11 +302,11 @@ npm install above-the-fold-only-server-render --save
 ### Usage
 * Add the component `src/components/above-the-fold.js`: 
 
-```js
+```jsx
 import React from "react";
 import {AboveTheFoldOnlyServerRender} from "above-the-fold-only-server-render";
 
-export class AboveFold extends React.Component {
+export default class AboveFold extends React.Component {
 
   render() {
     return (
@@ -240,18 +332,13 @@ export class AboveFold extends React.Component {
 
 * Add the component to the route `src/routes.js`:
 
-```js
-import { AboveFold } from "./components/above-the-fold";
-  <Route component={Header}>
-    <Route path="/abovefold" component={AboveFold} />
-	</Route>
+```jsx
+import AboveFold from "./components/above-the-fold";
+
+<Route component={Header}>
+  <Route path="/above-the-fold" component={AboveFold} />
+</Route>
 ``` 
-
-* Add the following links to the header `src/components/Header.js`: 
-
-```html
-<li style={styles.list}><Link style={styles.navLink}  to="/abovefold" activeClassName="active">Above the fold</Link></li>				
-```
 
 * Following the instructions on how to manipulate the skip prop by directly commenting and uncommenting the `above-the-fold-only-server-render` [component](https://github.com/electrode-io/above-the-fold-only-server-render).
 

@@ -115,50 +115,35 @@ server.route({
 	}
 });
 
-/**
- * Catch dynamic requests here to fire-up React Router.
- */
 server.ext("onPreResponse", (request, reply) => {
 	if (typeof request.response.statusCode !== "undefined") {
     return reply.continue();
   }
 
-engine.render(request)
-    .then( (result) => {
-      // send full HTML with result back using res
+	engine.render(request).then( (result) => { 
+		const webserver = __PRODUCTION__ ? "" : `//${hostname}:8080`;
+		let output = (
+			`<!doctype html>
+			<html lang="en-us">
+				<head>
+					<meta charset="utf-8">
+					<title>Hapi Universal Redux</title>
+					<link rel="shortcut icon" href="/favicon.ico">
+				</head>
+				<body>
+					<div id="react-root">${result.html}</div>
+					<script>
+						window.__INITIAL_STATE__ = ${JSON.stringify(initialState)}
+						window.__UA__ = ${JSON.stringify(request.headers['user-agent'])}
+					</script>
+					<script src=${webserver}/dist/client.js></script>
+					<script>if (window.webappStart) webappStart(); </script>
+				</body>
+			</html>`
+			);
 
-	// const reactString = ReactDOM.renderToString(
-	// 	<Provider store={store}>
-	// 		<RadiumContainer radiumConfig={{userAgent: request.headers['user-agent']}}>
-	// 			<div>
-	// 				<div>{result.html}</div>
-	// 			</div>
-	// 		</RadiumContainer>
-	// 	</Provider>
-	// );
-	const webserver = __PRODUCTION__ ? "" : `//${hostname}:8080`;
-	let output = (
-		`<!doctype html>
-		<html lang="en-us">
-			<head>
-				<meta charset="utf-8">
-				<title>Hapi Universal Redux</title>
-				<link rel="shortcut icon" href="/favicon.ico">
-			</head>
-			<body>
-				<div id="react-root">${result.html}</div>
-				<script>
-					window.__INITIAL_STATE__ = ${JSON.stringify(initialState)}
-					window.__UA__ = ${JSON.stringify(request.headers['user-agent'])}
-				</script>
-				<script src=${webserver}/dist/client.js></script>
-				<script>if (window.webappStart) webappStart(); </script>
-			</body>
-		</html>`
-		);
-
-	reply(output);
-  });
+		reply(output);
+	});
 });
 
 if (__DEV__) {
