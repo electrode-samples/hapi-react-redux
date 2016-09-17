@@ -128,7 +128,7 @@ server.ext("onPreResponse", (request, reply) => {
 				<head>
 					<meta charset="utf-8">
 					<title>Hapi Universal Redux</title>
-					<link rel="shortcut icon" href="/favicon.ico">
+					<link href="base.css" rel="stylesheet" type="text/css" charSet="UTF-8"/>
 				</head>
 				<body>
 					<div id="react-root">${result.html}</div>
