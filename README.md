@@ -7,7 +7,7 @@
 ## Install
 
 ```bash
-git clone https://github.com/electrode-io/hapi-react-redux.git
+git clone https://github.com/docs-code-examples-electrode-io/hapi-react-redux.git
 npm install 
 ```
 
