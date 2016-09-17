@@ -1,8 +1,9 @@
 # hapi-react-redux
-- This repo is a sample Hapijs app with the following Electrode modules:
+
+This repo is a sample Hapijs app with the following Electrode modules:
   - [Electrode React SSR Caching](https://github.com/electrode-io/electrode-react-ssr-caching) 
   - [Electrode Redux Router Engine](https://github.com/electrode-io/electrode-redux-router-engine)
-  - [Above the Fold Server Rendering](https://github.com/electrode-io/above-the-fold-only-server-render)
+  - [Electrode Above the Fold Server Rendering](https://github.com/electrode-io/above-the-fold-only-server-render)
 
 ## Install
 
@@ -12,14 +13,14 @@ npm install
 ```
 
 ## Run
-- Start the electrode app in `development` environment:
+- Start the hapi app in `development` environment:
 
 ```bash
 NODE_ENV=development npm run build
 NODE_ENV=development npm run start
 ```
 
-- Start the electrode app in `production` environment:
+- Start the hapi app in `production` environment:
 
 ```bash
 NODE_ENV=production npm run build
@@ -47,11 +48,19 @@ npm install
 
 - Run using the following:
 
+- Start the hapi app in `development` environment:
+
 ```bash
 NODE_ENV=development npm run build
 NODE_ENV=development npm start
 ```
 
+- Start the hapi app in `production` environment:
+
+```bash
+NODE_ENV=production npm run build
+NODE_ENV=production npm start
+```
 ---
 
 ## <a name="ssr-caching"></a>Electrode React SSR Caching
@@ -63,9 +72,24 @@ It supports 2 types of caching:
 * Simple - Component Props become the cache key. This is useful for cases like Header and Footer where the number of variations of props data is minimal which will make sure the cache size stays small.
 * Template - Components Props are first tokenized and then the generated template html is cached. The idea is akin to generating logic-less handlebars template from your React components and then use string replace to process the template with different props. This is useful for cases like displaying Product information in a Carousel where you have millions of products in the repository.
 
-To demonstrate functionality,
+### Install
+```bash
+$ npm install --save electrode-react-ssr-caching
+```
 
-* Added component `src/components/SSRCachingSimpleType.js` to demostrate Simple strategy. 
+### Wiring
+
+####GOTCHA:
+
+- SSR caching of components only works in PRODUCTION mode, since the props(which are read only) are mutated for caching purposes and mutating of props is not allowed in development mode by react.
+
+- Make sure the `electrode-react-ssr-caching` module is imported first followed by the imports of react and react-dom module. SSR caching will not work if the ordering is changed since caching module has to have a chance to patch react's code first. Also if you are importing `electrode-react-ssr-caching`, `react`  and `react-dom` in the same file , make sure you are using all `require` or all `import`. Found that SSR caching was NOT working if, `electrode-react-ssr-caching` is `require`d first and then `react` and `react-dom` is imported.
+
+---
+
+To demonstrate functionality, we have added:
+
+* `src/components/SSRCachingSimpleType.js` for Simple strategy. 
 
 ```js
 import React from "react";
@@ -109,7 +133,7 @@ export default connect(
 
 ```
 
-* Added component `src/components/SSRCachingTemplateType.jsx` to demostrate Template strategy. 
+* `src/components/SSRCachingTemplateType.jsx` for Template strategy. 
 
 ```js
 import React from "react";
@@ -155,7 +179,6 @@ export default connect(
 * Note: make sure to include `SSRCaching` above the `react` import
 
 ```js
-import SSRCaching from "electrode-react-ssr-caching";
 
 const cacheConfig = {
   components: {
