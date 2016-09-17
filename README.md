@@ -90,93 +90,8 @@ $ npm install --save electrode-react-ssr-caching
 To demonstrate functionality, we have added:
 
 * `src/components/SSRCachingSimpleType.js` for Simple strategy. 
-
-```js
-import React from "react";
-import { connect } from "react-redux";
-
-class SSRCachingSimpleTypeWrapper extends React.Component {
-  render() {
-    const count = this.props.count;
-
-    var elements = [];
-
-    for(var i = 0; i < count; i++) {
-      elements.push(<SSRCachingSimpleType key={i} navEntry={"NavEntry" + i}/>);
-    }
-
-    return (
-      <div>
-        {elements}
-      </div>
-    );
-  }
-}
-
-class SSRCachingSimpleType extends React.Component {
-  render() {
-    return (
-      <div>
-        <p>{this.props.navEntry}</p>
-      </div>
-    );
-  }
-}
-
-const mapStateToProps = (state) => ({
-  count: state.count
-})
-
-export default connect(
-  mapStateToProps
-)(SSRCachingSimpleTypeWrapper);
-
-```
-
 * `src/components/SSRCachingTemplateType.jsx` for Template strategy. 
-
-```js
-import React from "react";
-import { connect } from "react-redux";
-
-class SSRCachingTemplateTypeWrapper extends React.Component {
-  render() {
-    const count = this.props.count;
-    var elements = [];
-
-    for(var i = 0; i < count; i++) {
-      elements.push(<SSRCachingTemplateType key={i} name={"name"+i} title={"title"+i} rating={"rating"+i}/>);
-    }
-
-    return (
-      <div>
-        { elements }
-      </div>
-    );
-  }
-}
-
-class SSRCachingTemplateType extends React.Component {
-  render() {
-    return (
-      <div>
-        <p>{this.props.name} and {this.props.title} and {this.props.rating}</p>
-      </div>
-    );
-  }
-}
-
-const mapStateToProps = (state) => ({
-  count: state.count
-})
-
-export default connect(
-  mapStateToProps
-)(SSRCachingTemplateTypeWrapper);
-```
-
-* Add the following to `src/server.js`:
-* Note: make sure to include `SSRCaching` above the `react` import
+* To enable caching using `electrode-react-ssr-caching`, we need to do the below configuration in `src/server.js`.
 
 ```js
 
@@ -197,33 +112,6 @@ SSRCaching.enableCaching();
 SSRCaching.setCachingConfig(cacheConfig);
 ```
 
-* From `src/server.js`, replace this line: `const store = configureStore();` with the following: 
-
-```javascript
-const store = configureStore({count: 100});
-```
-
-* Add the count to the root reducer `src/reducers/index.js`: 
-
-```js
-const rootReducer = combineReducers({
-  routing: routerReducer,
-  count: (s=5, a) => s
-});
-```  
-
-* Add the following routes to `src/routes.js`: 
-
-```javascript
-import SSRCachingTemplateType from "./components/SSRCachingTemplateType";
-import SSRCachingSimpleType from "./components/SSRCachingSimpleType";
-
-<Route>
-	<Route path="/ssrcachingtemplatetype" component={SSRCachingTemplateType} />
-	<Route path="/ssrcachingsimpletype" component={SSRCachingSimpleType} />
-</Route>
-```
-
 * To read more, go to [electrode-react-ssr-caching](https://github.com/electrode-io/electrode-react-ssr-caching)
 
 ---
@@ -238,7 +126,7 @@ npm install --save electrode-redux-router-engine
 ```
 
 ### Usage
-* Add the create redux store and redux router engine in `src/server.js`: 
+* Setting up the redux store and redux router engine in `src/server.js`: 
 
 ```js
 import { createStore } from "redux";
@@ -258,52 +146,13 @@ function createReduxStore(request) {
 const engine = new ReduxRouterEngine({ routes, createReduxStore});
 ```
 
-* Update the `server.ext("onPreResponse", (request, reply)` section to contain the following: 
+* `engine.render` gives a `Promise` whose eventual value contains the rendered `HTML` for the matched component. It is done in `src/server.js`.
 
 ```js
-server.ext("onPreResponse", (request, reply) => {
-	if (typeof request.response.statusCode !== "undefined") {
-    return reply.continue();
-  }
-
-	engine.render(request).then( (result) => { 
-		const webserver = __PRODUCTION__ ? "" : `//${hostname}:8080`;
-		let output = (
-			`<!doctype html>
-			<html lang="en-us">
-				<head>
-					<meta charset="utf-8">
-					<title>Hapi Universal Redux</title>
-					<link rel="shortcut icon" href="/favicon.ico">
-				</head>
-				<body>
-					<div id="react-root">${result.html}</div>
-					<script>
-						window.__INITIAL_STATE__ = ${JSON.stringify(initialState)}
-						window.__UA__ = ${JSON.stringify(request.headers['user-agent'])}
-					</script>
-					<script src=${webserver}/dist/client.js></script>
-					<script>if (window.webappStart) webappStart(); </script>
-				</body>
-			</html>`
-			);
-
-		reply(output);
-	});
-});
-```
-
-* Update `src/client.js` with the following: 
-
-```js
-window.webappStart = () => {
-	ReactDOM.render(
-    <Provider store={store}>
-      <Router routes={routes} history={history} />
-    </Provider>,
-    reactRoot
-	);
-};
+engine.render(req)
+    .then( (result) => {
+      // send full HTML with result back using res
+    });
 ```
 
 ---
