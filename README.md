@@ -3,7 +3,7 @@
 This repo is a sample Hapijs app with the following Electrode modules:
   - [Electrode React SSR Caching](https://github.com/electrode-io/electrode-react-ssr-caching) 
   - [Electrode Redux Router Engine](https://github.com/electrode-io/electrode-redux-router-engine)
-  - [Electrode Above the Fold Server Rendering](https://github.com/electrode-io/above-the-fold-only-server-render)
+  - [Above The Fold Only Server Render](https://github.com/electrode-io/above-the-fold-only-server-render)
 
 ## Install
 
@@ -32,7 +32,7 @@ NODE_ENV=production npm run start
   - [Hapijs Server](#hapijs-server)
   - [Electrode React SSR Caching](#ssr-caching)
   - [Electrode Redux Router Engine](#redux-router-engine)
-  - [Above the Fold Server Rendering](#above-the-fold)
+  - [Above The Fold Only Server Render](#above-the-fold-only-server-render)
 
 ---
 
@@ -157,9 +157,9 @@ engine.render(req)
 
 ---
 
-### <a name="above-the-fold"></a>Electrode Above the Fold Server Rendering
+### <a name="above-the-fold-only-server-render"></a>Above The Fold Only Server Render
 
-[Above the Fold Server Rendering](https://github.com/electrode-io/above-the-fold-only-server-render) is a React component for optionally skipping server side rendering of components outside above-the-fold (or outside of the viewport). This component helps render your components on the server that are above the fold and the remaining components on the client.
+[Above-the-fold-only-server-render](https://github.com/electrode-io/above-the-fold-only-server-render) is a React component for optionally skipping server side rendering of components outside above-the-fold (or outside of the viewport). This component helps render your components on the server that are above the fold and the remaining components on the client.
 
 [Above-the-fold-only-server-render](https://github.com/electrode-io/above-the-fold-only-server-render) helps increase performance both by decreasing the load on renderToString and sending the end user a smaller amount of markup.
 
