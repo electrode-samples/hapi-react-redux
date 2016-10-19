@@ -1,7 +1,7 @@
 # hapi-react-redux
 
 This repo is a sample Hapijs app with the following Electrode modules:
-  - [Electrode React SSR Caching](https://github.com/electrode-io/electrode-react-ssr-caching) 
+  - [Electrode React SSR Caching](https://github.com/electrode-io/electrode-react-ssr-caching)
   - [Electrode Redux Router Engine](https://github.com/electrode-io/electrode-redux-router-engine)
   - [Above The Fold Only Server Render](https://github.com/electrode-io/above-the-fold-only-server-render)
 
@@ -9,7 +9,7 @@ This repo is a sample Hapijs app with the following Electrode modules:
 
 ```bash
 git clone https://github.com/docs-code-examples-electrode-io/hapi-react-redux.git
-npm install 
+npm install
 ```
 
 ## Run
@@ -37,8 +37,8 @@ NODE_ENV=production npm run start
 ---
 
 ## <a name="hapijs-server"></a>Hapijs Server
-- Let's use the [hapi-universal-redux](https://github.com/luandro/hapi-universal-redux) repo to scaffold our app. 
-- Create a hapi app using the following commands: 
+- Let's use the [hapi-universal-redux](https://github.com/luandro/hapi-universal-redux) repo to scaffold our app.
+- Create a hapi app using the following commands:
 
 ```bash
 git clone https://github.com/luandro/hapi-universal-redux.git hapiApp
@@ -89,8 +89,8 @@ $ npm install --save electrode-react-ssr-caching
 
 To demonstrate functionality, we have added:
 
-* `src/components/SSRCachingSimpleType.js` for Simple strategy. 
-* `src/components/SSRCachingTemplateType.jsx` for Template strategy. 
+* `src/components/SSRCachingSimpleType.js` for Simple strategy.
+* `src/components/SSRCachingTemplateType.jsx` for Template strategy.
 * To enable caching using `electrode-react-ssr-caching`, we need to do the below configuration in `src/server.js`.
 
 ```js
@@ -126,7 +126,7 @@ npm install --save electrode-redux-router-engine
 ```
 
 ### Usage
-* Setting up the redux store and redux router engine in `src/server.js`: 
+* Setting up the redux store and redux router engine in `src/server.js`:
 
 ```js
 import { createStore } from "redux";
@@ -268,3 +268,5 @@ You can also skip server side rendering by `setting context in your app and pass
 ```
 
 To learn more about this essential stand alone module  visit the `above-the-fold-only-server-render` [Github repo](https://github.com/electrode-io/above-the-fold-only-server-render).
+
+Built with :heart: by [Team Electrode](https://github.com/orgs/electrode-io/people) @WalmartLabs.
